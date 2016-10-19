@@ -130,6 +130,8 @@ class ILI9488 : public Adafruit_GFX {
   void     begin(void),
            setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1),
            pushColor(uint16_t color),
+           pushColors(uint16_t *data, uint8_t len, boolean first),
+           drawImage(const uint8_t* img, uint16_t x, uint16_t y, uint16_t w, uint16_t h),
            fillScreen(uint16_t color),
            drawPixel(int16_t x, int16_t y, uint16_t color),
            drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color),
@@ -173,7 +175,7 @@ class ILI9488 : public Adafruit_GFX {
 //    volatile PORT_OUT_Type *mosiport, *clkport, *dcport, *rsport, *csport;
 //    int32_t  _cs, _dc, _rst, _mosi, _miso, _sclk;
 //    PORT_OUT_Type  mosipinmask, clkpinmask, cspinmask, dcpinmask;
-#elif defined (__STM32F1__)
+#elif defined (__STM32F1__) || defined (_VARIANT_ARDUINO_STM32_) || defined (STM32F100xE) || defined (STM32F101xE) || defined (STM32F101xG) || defined (STM32F103xE) || defined (STM32F103xG) || defined (STM32F105xC) || defined (STM32F107xC)
     uint8_t mySPCR;
     volatile uint32_t *mosiport, *clkport, *dcport, *rsport, *csport;
     int32_t  _cs, _dc, _rst, _mosi, _miso, _sclk;

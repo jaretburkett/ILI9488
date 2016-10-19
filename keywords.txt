@@ -24,3 +24,4 @@ fillRect	KEYWORD2
 setRotation	KEYWORD2
 setRotation	KEYWORD2
 invertDisplay KEYWORD2
+drawImage KEYWORD2
