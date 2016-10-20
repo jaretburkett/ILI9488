@@ -129,6 +129,8 @@ class ILI9488 : public Adafruit_GFX {
 
   void     begin(void),
            setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1),
+           setScrollArea(uint16_t topFixedArea, uint16_t bottomFixedArea),
+           scroll(uint16_t pixels),
            pushColor(uint16_t color),
            pushColors(uint16_t *data, uint8_t len, boolean first),
            drawImage(const uint8_t* img, uint16_t x, uint16_t y, uint16_t w, uint16_t h),

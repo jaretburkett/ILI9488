@@ -463,6 +463,24 @@ void ILI9488::begin(void) {
 
 }
 
+void ILI9488::setScrollArea(uint16_t topFixedArea, uint16_t bottomFixedArea){
+  if (hwSPI) spi_begin();
+  writecommand(0x33); // Vertical scroll definition
+  writedata(topFixedArea >> 8);
+  writedata(topFixedArea);
+  writedata((_height - topFixedArea - bottomFixedArea) >> 8);
+  writedata(_height - topFixedArea - bottomFixedArea);
+  writedata(bottomFixedArea >> 8);
+  writedata(bottomFixedArea);
+  if (hwSPI) spi_end();
+}
+void ILI9488::scroll(uint16_t pixels){
+  if (hwSPI) spi_begin();
+  writecommand(0x37); // Vertical scrolling start address
+  writedata(pixels >> 8);
+  writedata(pixels);
+  if (hwSPI) spi_end();
+}
 
 void ILI9488::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1,
  uint16_t y1) {
@@ -566,28 +584,46 @@ void ILI9488::pushColor(uint16_t color) {
 }
 
 void ILI9488::pushColors(uint16_t *data, uint8_t len, boolean first) {
-  // uint16_t color;
-  // uint8_t  hi, lo;
-  // #if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
-  //   *csport &= ~cspinmask;
-  // #else
-  //   digitalWrite(_cs, LOW);
-  // #endif
-  // if(first == true) { // Issue GRAM write command only on first call
-  //   #if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
-  //     *dcport |=  dcpinmask;
-  //   #else
-  //     digitalWrite(_dc, HIGH);
-  //   #endif
-  // }
-  // while(len--) {
-  //   color = *data++;
-  //   hi    = color >> 8; // Don't simplify or merge these
-  //   lo    = color;      // lines, there's macro shenanigans
-  //   write8(hi);         // going on.
-  //   write8(lo);
-  // }
-  // CS_IDLE;
+  uint16_t color;
+  uint8_t  buff[len*3+1];
+  uint16_t count = 0;
+  uint8_t lencount = len;
+  if (hwSPI) spi_begin();
+  #if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+    *csport &= ~cspinmask;
+  #else
+    digitalWrite(_cs, LOW);
+  #endif
+  if(first == true) { // Issue GRAM write command only on first call
+    #if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+      *dcport |=  dcpinmask;
+    #else
+      digitalWrite(_dc, HIGH);
+    #endif
+  }
+  while(lencount--) {
+    color = *data++;
+    buff[count] = (((color & 0xF800) >> 11)* 255) / 31;
+    count++;
+    buff[count] = (((color & 0x07E0) >> 5) * 255) / 63;
+    count++;
+    buff[count] = ((color & 0x001F)* 255) / 31;
+    count++;
+  }
+  #if defined (__STM32F1__)
+    SPI.dmaSend(buff, len*3);
+  #else
+    for(uint16_t b = 0; b < len*3; b++){
+      spiwrite(buff[b]);
+    }
+  #endif
+  #if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+    *csport |= cspinmask;
+  #else
+    digitalWrite(_cs, HIGH);
+  #endif
+
+    if (hwSPI) spi_end();
 }
 
 void ILI9488::write16BitColor(uint16_t color){

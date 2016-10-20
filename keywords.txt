@@ -7,7 +7,6 @@
 #######################################
 
 ILI9488		KEYWORD1
-TS_Point	KEYWORD1
 
 
 #######################################
@@ -23,5 +22,9 @@ drawFastHLine	KEYWORD2
 fillRect	KEYWORD2
 setRotation	KEYWORD2
 setRotation	KEYWORD2
+height	KEYWORD2
+width	KEYWORD2
 invertDisplay KEYWORD2
 drawImage KEYWORD2
+setScrollArea  KEYWORD2
+scroll	KEYWORD2
