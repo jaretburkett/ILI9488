@@ -18,7 +18,7 @@
 #include <Adafruit_GFX.h>
 #include <ILI9488.h>
 
-#define TFT_CS         PA15
+#define TFT_CS         PA1
 #define TFT_DC         PB3
 #define TFT_LED        PB0
 #define TFT_RST        PB4
