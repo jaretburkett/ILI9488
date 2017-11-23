@@ -24,7 +24,7 @@ setRotation	KEYWORD2
 setRotation	KEYWORD2
 height	KEYWORD2
 width	KEYWORD2
-invertDisplay KEYWORD2
-drawImage KEYWORD2
-setScrollArea  KEYWORD2
+invertDisplay	KEYWORD2
+drawImage	KEYWORD2
+setScrollArea	KEYWORD2
 scroll	KEYWORD2
