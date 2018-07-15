@@ -6,17 +6,17 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-ILI9488		KEYWORD1
+ILI9488	KEYWORD1
 
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-setRotation		KEYWORD2
+setRotation	KEYWORD2
 setAddrWindow	KEYWORD2
 pushColor	KEYWORD2
-drawPixel		KEYWORD2
+drawPixel	KEYWORD2
 drawFastVLine	KEYWORD2
 drawFastHLine	KEYWORD2
 fillRect	KEYWORD2
