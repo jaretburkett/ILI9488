@@ -169,9 +169,15 @@ class ILI9488 : public Adafruit_GFX {
 
 #if defined (__AVR__) || defined(TEENSYDUINO)
   uint8_t mySPCR;
+#if defined(__IMXRT1052__) || defined(__IMXRT1062__)
+  volatile uint32_t *mosiport, *clkport, *dcport, *rsport, *csport;
+  int8_t  _cs, _dc, _rst, _mosi, _miso, _sclk;
+  uint32_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
+#else  
   volatile uint8_t *mosiport, *clkport, *dcport, *rsport, *csport;
   int8_t  _cs, _dc, _rst, _mosi, _miso, _sclk;
   uint8_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
+#endif
 ////This def is for the Arduino.ORG M0!!!
 //#elif defined(ARDUINO_SAM_ZERO)
 //    volatile PORT_OUT_Type *mosiport, *clkport, *dcport, *rsport, *csport;
