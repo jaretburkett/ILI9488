@@ -132,7 +132,7 @@ class ILI9488 : public Adafruit_GFX {
            setScrollArea(uint16_t topFixedArea, uint16_t bottomFixedArea),
            scroll(uint16_t pixels),
            pushColor(uint16_t color),
-           pushColors(uint16_t *data, uint8_t len, boolean first),
+           pushColors(uint16_t *data, uint8_t len, bool first),
            drawImage(const uint8_t* img, uint16_t x, uint16_t y, uint16_t w, uint16_t h),
            fillScreen(uint16_t color),
            drawPixel(int16_t x, int16_t y, uint16_t color),
@@ -141,7 +141,7 @@ class ILI9488 : public Adafruit_GFX {
            fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
              uint16_t color),
            setRotation(uint8_t r),
-           invertDisplay(boolean i);
+           invertDisplay(bool i);
   uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
 
   /* These are not for current use, 8-bit protocol only! */
@@ -165,7 +165,7 @@ class ILI9488 : public Adafruit_GFX {
 
 
 
-  boolean  hwSPI;
+  bool  hwSPI;
 
 #if defined (__AVR__) || defined(TEENSYDUINO)
   uint8_t mySPCR;
