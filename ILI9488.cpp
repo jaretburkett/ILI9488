@@ -583,7 +583,7 @@ void ILI9488::pushColor(uint16_t color) {
   if (hwSPI) spi_end();
 }
 
-void ILI9488::pushColors(uint16_t *data, uint8_t len, boolean first) {
+void ILI9488::pushColors(uint16_t *data, uint8_t len, bool first) {
   uint16_t color;
   uint8_t  buff[len*3+1];
   uint16_t count = 0;
@@ -860,7 +860,7 @@ void ILI9488::setRotation(uint8_t m) {
 }
 
 
-void ILI9488::invertDisplay(boolean i) {
+void ILI9488::invertDisplay(bool i) {
   if (hwSPI) spi_begin();
   writecommand(i ? ILI9488_INVON : ILI9488_INVOFF);
   if (hwSPI) spi_end();
