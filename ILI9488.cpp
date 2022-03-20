@@ -646,6 +646,7 @@ void ILI9488::write16BitColor(uint16_t color){
   spiwrite(r);
   spiwrite(g);
   spiwrite(b);
+  yield();
   // #endif
 }
 
