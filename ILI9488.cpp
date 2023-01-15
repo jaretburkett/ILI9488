@@ -1,5 +1,6 @@
 /***************************************************
   STM32 Support added by Jaret Burkett at OSHlab.com
+  ARDUINO RP2040 Support added by Gerard Forcada garfius@gmail.com
 
   This is our library for the Adafruit ILI9488 Breakout and Shield
   ----> http://www.adafruit.com/products/1651
@@ -97,7 +98,7 @@ void ILI9488::spiwrite(uint8_t c) {
     SPI.transfer(c);
 #endif
   } else {
-#if defined(ESP8266) || defined (ARDUINO_ARCH_ARC32)
+#if defined(ESP8266) || defined (ARDUINO_ARCH_ARC32) || defined (ARDUINO_ARCH_RP2040)
     for(uint8_t bit = 0x80; bit; bit >>= 1) {
       if(c & bit) {
 	digitalWrite(_mosi, HIGH);
@@ -128,7 +129,7 @@ void ILI9488::spiwrite(uint8_t c) {
 
 
 void ILI9488::writecommand(uint8_t c) {
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *dcport &= ~dcpinmask;
   *csport &= ~cspinmask;
 #else
@@ -139,7 +140,7 @@ void ILI9488::writecommand(uint8_t c) {
 
   spiwrite(c);
 
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *csport |= cspinmask;
 #else
   digitalWrite(_cs, HIGH);
@@ -148,7 +149,7 @@ void ILI9488::writecommand(uint8_t c) {
 
 
 void ILI9488::writedata(uint8_t c) {
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *dcport |=  dcpinmask;
   *csport &= ~cspinmask;
 #else
@@ -158,7 +159,7 @@ void ILI9488::writedata(uint8_t c) {
 
   spiwrite(c);
 
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *csport |= cspinmask;
 #else
   digitalWrite(_cs, HIGH);
@@ -209,7 +210,7 @@ void ILI9488::begin(void) {
   pinMode(_dc, OUTPUT);
   pinMode(_cs, OUTPUT);
 
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   csport    = portOutputRegister(digitalPinToPort(_cs));
   cspinmask = digitalPinToBitMask(_cs);
   dcport    = portOutputRegister(digitalPinToPort(_dc));
@@ -236,7 +237,7 @@ void ILI9488::begin(void) {
     pinMode(_mosi, OUTPUT);
     pinMode(_miso, INPUT);
 
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
     clkport     = portOutputRegister(digitalPinToPort(_sclk));
     clkpinmask  = digitalPinToBitMask(_sclk);
     mosiport    = portOutputRegister(digitalPinToPort(_mosi));
@@ -500,7 +501,8 @@ void ILI9488::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1,
   writecommand(ILI9488_RAMWR); // write to RAM
 
 }
-
+/*
+// warning: variable length array 'buff' is used
 void ILI9488::drawImage(const uint8_t* img, uint16_t x, uint16_t y, uint16_t w, uint16_t h){
 
     // rudimentary clipping (drawChar w/big text requires this)
@@ -513,7 +515,7 @@ void ILI9488::drawImage(const uint8_t* img, uint16_t x, uint16_t y, uint16_t w, 
 
     // uint8_t hi = color >> 8, lo = color;
 
-  #if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+  #if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
     *dcport |=  dcpinmask;
     *csport &= ~cspinmask;
   #else
@@ -521,7 +523,7 @@ void ILI9488::drawImage(const uint8_t* img, uint16_t x, uint16_t y, uint16_t w, 
     digitalWrite(_cs, LOW);
   #endif
   uint8_t linebuff[w*3+1];
-  uint16_t pixels = w*h;
+  //uint16_t pixels = w*h;
   // uint16_t count = 0;
   uint32_t count = 0;
   for (uint16_t i = 0; i < h; i++) {
@@ -548,7 +550,7 @@ void ILI9488::drawImage(const uint8_t* img, uint16_t x, uint16_t y, uint16_t w, 
     #endif
 
   }// for col
-  #if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+  #if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
     *csport |= cspinmask;
   #else
     digitalWrite(_cs, HIGH);
@@ -556,12 +558,11 @@ void ILI9488::drawImage(const uint8_t* img, uint16_t x, uint16_t y, uint16_t w, 
 
     if (hwSPI) spi_end();
 }
-
-
+*/
 void ILI9488::pushColor(uint16_t color) {
   if (hwSPI) spi_begin();
 
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *dcport |=  dcpinmask;
   *csport &= ~cspinmask;
 #else
@@ -574,7 +575,7 @@ void ILI9488::pushColor(uint16_t color) {
   // spiwrite(0); // added for 24 bit
   write16BitColor(color);
 
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *csport |= cspinmask;
 #else
   digitalWrite(_cs, HIGH);
@@ -582,20 +583,21 @@ void ILI9488::pushColor(uint16_t color) {
 
   if (hwSPI) spi_end();
 }
-
+/*
+// warning: variable length array 'buff' is used
 void ILI9488::pushColors(uint16_t *data, uint8_t len, boolean first) {
   uint16_t color;
   uint8_t  buff[len*3+1];
   uint16_t count = 0;
   uint8_t lencount = len;
   if (hwSPI) spi_begin();
-  #if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+  #if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
     *csport &= ~cspinmask;
   #else
     digitalWrite(_cs, LOW);
   #endif
   if(first == true) { // Issue GRAM write command only on first call
-    #if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+    #if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
       *dcport |=  dcpinmask;
     #else
       digitalWrite(_dc, HIGH);
@@ -617,7 +619,7 @@ void ILI9488::pushColors(uint16_t *data, uint8_t len, boolean first) {
       spiwrite(buff[b]);
     }
   #endif
-  #if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+  #if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
     *csport |= cspinmask;
   #else
     digitalWrite(_cs, HIGH);
@@ -625,7 +627,7 @@ void ILI9488::pushColors(uint16_t *data, uint8_t len, boolean first) {
 
     if (hwSPI) spi_end();
 }
-
+*/
 void ILI9488::write16BitColor(uint16_t color){
   // #if (__STM32F1__)
   //     uint8_t buff[4] = {
@@ -656,7 +658,7 @@ void ILI9488::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if (hwSPI) spi_begin();
   setAddrWindow(x,y,x+1,y+1);
 
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *dcport |=  dcpinmask;
   *csport &= ~cspinmask;
 #else
@@ -669,7 +671,7 @@ void ILI9488::drawPixel(int16_t x, int16_t y, uint16_t color) {
   // spiwrite(0); // added for 24 bit
   write16BitColor(color);
 
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *csport |= cspinmask;
 #else
   digitalWrite(_cs, HIGH);
@@ -693,7 +695,7 @@ void ILI9488::drawFastVLine(int16_t x, int16_t y, int16_t h,
 
 //  uint8_t hi = color >> 8, lo = color;
 
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *dcport |=  dcpinmask;
   *csport &= ~cspinmask;
 #else
@@ -709,7 +711,7 @@ void ILI9488::drawFastVLine(int16_t x, int16_t y, int16_t h,
 
   }
 
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *csport |= cspinmask;
 #else
   digitalWrite(_cs, HIGH);
@@ -729,7 +731,7 @@ void ILI9488::drawFastHLine(int16_t x, int16_t y, int16_t w,
   setAddrWindow(x, y, x+w-1, y);
 
   // uint8_t hi = color >> 8, lo = color;
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *dcport |=  dcpinmask;
   *csport &= ~cspinmask;
 #else
@@ -742,7 +744,7 @@ void ILI9488::drawFastHLine(int16_t x, int16_t y, int16_t w,
     // spiwrite(0); // added for 24 bit
     write16BitColor(color);
   }
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *csport |= cspinmask;
 #else
   digitalWrite(_cs, HIGH);
@@ -768,7 +770,7 @@ void ILI9488::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
 
   // uint8_t hi = color >> 8, lo = color;
 
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *dcport |=  dcpinmask;
   *csport &= ~cspinmask;
 #else
@@ -805,7 +807,7 @@ void ILI9488::fillRect(int16_t x, int16_t y, int16_t w, int16_t h,
     }
   }
 #endif
-#if defined(USE_FAST_PINIO) && !defined (_VARIANT_ARDUINO_STM32_)
+#if defined(USE_FAST_PINIO) && !(defined (_VARIANT_ARDUINO_STM32_)|| defined (ARDUINO_ARCH_RP2040))
   *csport |= cspinmask;
 #else
   digitalWrite(_cs, HIGH);
