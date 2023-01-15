@@ -1,6 +1,7 @@
 /***************************************************
   STM32 Support added by Jaret Burkett at OSHlab.com
-
+  ARDUINO RP2040 Support added by Gerard Forcada garfius@gmail.com
+  
   This is our library for the Adafruit  ILI9488 Breakout and Shield
   ----> http://www.adafruit.com/products/1651
 
@@ -182,12 +183,12 @@ class ILI9488 : public Adafruit_GFX {
     volatile uint32_t *mosiport, *clkport, *dcport, *rsport, *csport;
     int32_t  _cs, _dc, _rst, _mosi, _miso, _sclk;
     uint32_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
+#elif defined (ESP8266) || defined (ARDUINO_ARCH_RP2040)
+    int32_t  _cs, _dc, _rst, _mosi, _miso, _sclk;
 #elif defined (__arm__)
     volatile RwReg *mosiport, *clkport, *dcport, *rsport, *csport;
     int32_t  _cs, _dc, _rst, _mosi, _miso, _sclk;
     uint32_t  mosipinmask, clkpinmask, cspinmask, dcpinmask;
-#elif defined (ESP8266)
-    int32_t  _cs, _dc, _rst, _mosi, _miso, _sclk;
 #else
     int8_t  _cs, _dc, _rst, _mosi, _miso, _sclk;
 #endif
